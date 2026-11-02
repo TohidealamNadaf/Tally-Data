@@ -1,0 +1,12 @@
+node_modules/
+dist/
+logs/
+backup/
+*.001
+*.tbk
+*.TBK
+.env
+.env.local
+.DS_Store
+Thumbs.db
+

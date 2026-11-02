@@ -1,0 +1,27 @@
+openapi: 3.0.0
+info:
+  title: Tally Gateway API
+  version: 1.0.0
+  description: REST API for interacting with Tally Gateway SDK.
+servers:
+  - url: http://localhost:3000/api/tally
+    description: Local Dev Server
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Tally is reachable
+  /stock-items:
+    get:
+      summary: Get all stock items
+      responses:
+        '200':
+          description: List of stock items
+  /companies:
+    get:
+      summary: Get list of active companies
+      responses:
+        '200':
+          description: List of companies

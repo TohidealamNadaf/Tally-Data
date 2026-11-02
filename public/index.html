@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tally Data Studio — Live Tally Routes to Excel Converter</title>
+  <meta name="description" content="Fetch live Tally Gateway routes, view voucher registers and master records, and convert to professionally formatted Excel workbooks.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-box">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="8" y1="13" x2="16" y2="13"/>
+          <line x1="8" y1="17" x2="16" y2="17"/>
+          <line x1="10" y1="9" x2="12" y2="9"/>
+        </svg>
+        <span class="logo-text">Tally<span class="accent-text">DataStudio</span></span>
+      </div>
+      <span class="version-tag">v2.0 PRO</span>
+    </div>
+
+    <div class="header-center">
+      <div id="gateway-status" class="status-indicator-badge">
+        <span class="status-dot"></span>
+        <span id="gateway-status-text" class="status-label">Checking Tally Gateway...</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button id="btn-master-export" class="btn btn-secondary" title="Export multiple routes into one consolidated Excel workbook">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <span>Master Excel Workbook</span>
+      </button>
+
+      <button id="btn-export-excel" class="btn btn-primary" title="Export current table to Excel">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span>Export Current to Excel</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-layout">
+    <!-- Left Sidebar: Route Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">API ROUTES CATALOG</span>
+      </div>
+
+      <nav class="routes-menu">
+        <!-- Vouchers & Registers -->
+        <div class="nav-group">
+          <div class="group-label">
+            <svg class="group-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            VOUCHERS & REGISTERS
+          </div>
+          <button class="nav-item active" data-route="/api/tally/sales/register" data-type="sales-register" data-title="Sales Register" data-desc="Complete Sales Voucher Register matching Tally columns">
+            <span class="nav-name">Sales Register</span>
+            <span class="badge badge-emerald">REGISTER</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/sales" data-type="sales" data-title="Sales Vouchers" data-desc="List of All Sales Vouchers with Debit / Credit amounts">
+            <span class="nav-name">Sales Vouchers</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/purchases" data-type="purchases" data-title="Purchase Vouchers" data-desc="All Purchase entries & vendor bills">
+            <span class="nav-name">Purchases</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/receipts" data-type="receipts" data-title="Receipt Vouchers" data-desc="Inward customer payment vouchers">
+            <span class="nav-name">Receipts</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/payments" data-type="payments" data-title="Payment Vouchers" data-desc="Outward vendor & expense payments">
+            <span class="nav-name">Payments</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/credit-notes" data-type="credit-notes" data-title="Credit Notes" data-desc="Sales returns and customer credit notes">
+            <span class="nav-name">Credit Notes</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/debit-notes" data-type="debit-notes" data-title="Debit Notes" data-desc="Purchase returns and supplier debit notes">
+            <span class="nav-name">Debit Notes</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/journals" data-type="journals" data-title="Journal Vouchers" data-desc="Adjustment and general journal entries">
+            <span class="nav-name">Journals</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/sales-orders" data-type="sales-orders" data-title="Sales Orders" data-desc="Customer sales orders placed">
+            <span class="nav-name">Sales Orders</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/purchase-orders" data-type="purchase-orders" data-title="Purchase Orders" data-desc="Supplier purchase orders issued">
+            <span class="nav-name">Purchase Orders</span>
+          </button>
+        </div>
+
+        <!-- Masters & Ledgers -->
+        <div class="nav-group">
+          <div class="group-label">
+            <svg class="group-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            MASTERS & PARTIES
+          </div>
+          <button class="nav-item" data-route="/api/tally/customer-ledgers" data-type="customer-ledgers" data-title="Customer Ledgers (Detailed)" data-desc="Customers with addresses, GST, bank details & balances">
+            <span class="nav-name">Customer Ledgers</span>
+            <span class="badge badge-indigo">FULL DETAILS</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/ledgers" data-type="ledgers" data-title="All Ledgers" data-desc="All Chart of Accounts ledgers with parent groups & balances">
+            <span class="nav-name">All Ledgers</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/customers" data-type="customers" data-title="Sundry Debtors" data-desc="All Debtors / Customers in Tally">
+            <span class="nav-name">Customers</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/suppliers" data-type="suppliers" data-title="Sundry Creditors" data-desc="All Creditors / Suppliers in Tally">
+            <span class="nav-name">Suppliers</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/receivables" data-type="receivables" data-title="Outstanding Receivables" data-desc="Debtors with outstanding debit balance">
+            <span class="nav-name">Receivables</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/companies" data-type="companies" data-title="Active Companies" data-desc="Currently loaded companies in Tally">
+            <span class="nav-name">Companies</span>
+          </button>
+        </div>
+
+        <!-- Inventory -->
+        <div class="nav-group">
+          <div class="group-label">
+            <svg class="group-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            INVENTORY & STOCK
+          </div>
+          <button class="nav-item" data-route="/api/tally/stock-items/detailed" data-type="stock-items-detailed" data-title="Stock Items (Detailed)" data-desc="Items with HSN, GST rates, costing, batches & valuation">
+            <span class="nav-name">Stock Items Detailed</span>
+            <span class="badge badge-indigo">HSN & GST</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/stock-items" data-type="stock-items" data-title="Stock Items (Basic)" data-desc="Stock items with opening/closing quantities & rates">
+            <span class="nav-name">Stock Items</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/stock-categories" data-type="stock-categories" data-title="Stock Categories" data-desc="Stock category master with aliases & groupings">
+            <span class="nav-name">Stock Categories</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/stock-groups" data-type="stock-groups" data-title="Stock Groups" data-desc="Inventory group hierarchy">
+            <span class="nav-name">Stock Groups</span>
+          </button>
+          <button class="nav-item" data-route="/api/tally/units" data-type="units" data-title="Units of Measurement" data-desc="Measurement units and symbols">
+            <span class="nav-name">Units</span>
+          </button>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Working Panel -->
+    <section class="main-panel">
+      <!-- Route Header & Filters Banner -->
+      <div class="route-header-card">
+        <div class="route-header-info">
+          <div class="route-title-line">
+            <h1 id="active-title" class="route-title">Sales Register</h1>
+            <span id="active-route-badge" class="route-badge">GET /api/tally/sales/register</span>
+          </div>
+          <p id="active-desc" class="route-description">Complete Sales Voucher Register matching Tally columns (Date, Particulars, Vch Type, Vch No, Debit Amount, Credit Amount)</p>
+        </div>
+
+        <!-- Filter Controls Bar -->
+        <div id="filter-controls-bar" class="filter-controls-bar">
+          <!-- Month Filter (for Vouchers) -->
+          <div class="filter-item" id="filter-month-container">
+            <label for="filter-month" class="filter-label">Quick Period</label>
+            <select id="filter-month" class="filter-input select-input">
+              <option value="">All Dates</option>
+              <option value="2026-04" selected>April 2026 (Active Period)</option>
+              <option value="2026-05">May 2026</option>
+              <option value="2026-06">June 2026</option>
+              <option value="2026-07">July 2026</option>
+              <option value="2026-08">August 2026</option>
+              <option value="2026-09">September 2026</option>
+            </select>
+          </div>
+
+          <!-- From Date -->
+          <div class="filter-item" id="filter-from-container">
+            <label for="filter-from-date" class="filter-label">From Date</label>
+            <input type="date" id="filter-from-date" class="filter-input date-input" value="2026-04-01">
+          </div>
+
+          <!-- To Date -->
+          <div class="filter-item" id="filter-to-container">
+            <label for="filter-to-date" class="filter-label">To Date</label>
+            <input type="date" id="filter-to-date" class="filter-input date-input" value="2026-04-30">
+          </div>
+
+          <!-- Party Filter -->
+          <div class="filter-item" id="filter-party-container">
+            <label for="filter-party" class="filter-label">Search Party / Ledger</label>
+            <input type="text" id="filter-party" class="filter-input text-input" placeholder="e.g. Patel, Cash, Ashok...">
+          </div>
+
+          <!-- Fetch Button -->
+          <div class="filter-actions">
+            <button id="btn-fetch" class="btn btn-action" title="Fetch live data from Tally Gateway">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"/>
+                <polyline points="1 20 1 14 7 14"/>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              <span>Fetch Live Data</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon-box blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div class="metric-content">
+            <span class="metric-label">Total Records</span>
+            <span id="metric-records" class="metric-value">0</span>
+          </div>
+        </div>
+
+        <div class="metric-card" id="metric-debit-card">
+          <div class="metric-icon-box emerald">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="metric-content">
+            <span id="metric-debit-label" class="metric-label">Total Debit (₹)</span>
+            <span id="metric-debit-val" class="metric-value">₹0.00</span>
+          </div>
+        </div>
+
+        <div class="metric-card" id="metric-credit-card">
+          <div class="metric-icon-box amber">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+          </div>
+          <div class="metric-content">
+            <span id="metric-credit-label" class="metric-label">Total Credit (₹)</span>
+            <span id="metric-credit-val" class="metric-value">₹0.00</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-box purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="metric-content">
+            <span class="metric-label">Query Time</span>
+            <span id="metric-latency" class="metric-value">0 ms</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <div class="table-container-card">
+        <div class="table-toolbar">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="table-search" placeholder="Type to filter table rows..." class="table-search-input">
+          </div>
+
+          <div class="toolbar-actions">
+            <span id="filtered-count" class="counter-pill">Showing 0 rows</span>
+            <button id="btn-copy-json" class="btn btn-outline" title="Copy raw JSON to clipboard">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Copy JSON</span>
+            </button>
+            <button id="btn-export-csv" class="btn btn-outline" title="Export current rows as CSV file">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Table -->
+        <div class="table-scroll-wrapper">
+          <table id="data-table" class="data-table">
+            <thead id="table-head">
+              <!-- Dynamically Populated Header -->
+            </thead>
+            <tbody id="table-body">
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <div class="empty-content">
+                    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <p class="empty-title">Ready to Fetch Tally Data</p>
+                    <p class="empty-subtitle">Click "Fetch Live Data" or select any route on the left.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Pagination -->
+        <div class="table-footer">
+          <div class="footer-left">
+            <span id="footer-status-text">Click "Export Current to Excel" to download .xlsx workbook.</span>
+          </div>
+          <div class="footer-right">
+            <label for="rows-per-page" class="footer-label">Rows per page:</label>
+            <select id="rows-per-page" class="rows-select">
+              <option value="25">25</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+              <option value="99999">All</option>
+            </select>
+            <div class="pagination-controls">
+              <button id="btn-prev-page" class="btn-page" disabled>&larr;</button>
+              <span id="page-indicator" class="page-indicator">Page 1 of 1</span>
+              <button id="btn-next-page" class="btn-page" disabled>&rarr;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Master Export Modal -->
+  <div id="modal-master-export" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Export Multi-Sheet Master Excel Workbook</h2>
+        <button id="btn-close-modal" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Select the Tally data modules you want to bundle into a single Excel file. Each module will be created as its own formatted worksheet tab:</p>
+        
+        <div class="module-selection-grid">
+          <label class="module-check-card">
+            <input type="checkbox" name="master-module" value="sales" checked>
+            <div class="check-content">
+              <span class="module-name">Sales Register</span>
+              <span class="module-sub">Vouchers, dates, parties, debit amounts</span>
+            </div>
+          </label>
+          <label class="module-check-card">
+            <input type="checkbox" name="master-module" value="customers" checked>
+            <div class="check-content">
+              <span class="module-name">Customer Ledgers</span>
+              <span class="module-sub">Addresses, GSTIN, PAN, bank details</span>
+            </div>
+          </label>
+          <label class="module-check-card">
+            <input type="checkbox" name="master-module" value="stock-items" checked>
+            <div class="check-content">
+              <span class="module-name">Stock Items Detailed</span>
+              <span class="module-sub">HSN codes, GST rates, balances, batches</span>
+            </div>
+          </label>
+          <label class="module-check-card">
+            <input type="checkbox" name="master-module" value="categories" checked>
+            <div class="check-content">
+              <span class="module-name">Stock Categories</span>
+              <span class="module-sub">Categories, aliases, and groupings</span>
+            </div>
+          </label>
+          <label class="module-check-card">
+            <input type="checkbox" name="master-module" value="ledgers" checked>
+            <div class="check-content">
+              <span class="module-name">All Ledgers</span>
+              <span class="module-sub">Full chart of accounts & balances</span>
+            </div>
+          </label>
+          <label class="module-check-card">
+            <input type="checkbox" name="master-module" value="purchases">
+            <div class="check-content">
+              <span class="module-name">Purchase Vouchers</span>
+              <span class="module-sub">Vendor bills and purchases</span>
+            </div>
+          </label>
+        </div>
+
+        <div id="master-progress-box" class="progress-box hidden">
+          <div class="progress-bar-track">
+            <div id="master-progress-bar" class="progress-bar-fill"></div>
+          </div>
+          <span id="master-progress-text" class="progress-text">Preparing export...</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-cancel-modal" class="btn btn-secondary">Cancel</button>
+        <button id="btn-start-master-export" class="btn btn-primary">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Generate & Download Excel</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Local Offline SheetJS Library with CDN Fallback -->
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script>
+    if (typeof XLSX === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\/script>');
+    }
+  </script>
+  <!-- Main Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

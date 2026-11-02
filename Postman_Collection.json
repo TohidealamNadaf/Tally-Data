@@ -1,0 +1,51 @@
+{
+  "info": {
+    "name": "Tally Gateway API",
+    "description": "Collection for Tally Gateway API endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/tally/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "tally", "health"]
+        }
+      }
+    },
+    {
+      "name": "Get Stock Items",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/tally/stock-items",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "tally", "stock-items"]
+        }
+      }
+    },
+    {
+      "name": "Get Companies",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/tally/companies",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "tally", "companies"]
+        }
+      }
+    }
+  ]
+}
